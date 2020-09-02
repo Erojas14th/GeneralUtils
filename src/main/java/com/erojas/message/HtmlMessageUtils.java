@@ -15,7 +15,7 @@ public class HtmlMessageUtils {
 
     private static String getMessageByRegex(String message, String regex) {
         List<Integer> indexes = getIndexRegex(message, regex);
-        logger.info("=== regex: {} - {} ",regex,indexes.size());
+        logger.info("=== regex: {} - {} ",  regex,indexes.size());
         StringBuffer buildMessage = new StringBuffer();
         int j = 0;
         int before = 0;
@@ -58,9 +58,9 @@ public class HtmlMessageUtils {
 
     }
 
-    private static String getMessageByCompositeRegexUrl(String message) {
+    private static String getMessageByCompositeRegexBar(String message) {
 
-        if (countRegexComposite(message)) {
+        if (countRegexBarComposite(message)) {
             int size = getIndexBarCenter(message).size();
 
             for (int i = 0; i < size; i++) {
@@ -107,8 +107,7 @@ public class HtmlMessageUtils {
         return indexesRight;
     }
 
-    private static boolean countRegexComposite(String message) {
-
+    private static boolean countRegexBarComposite(String message) {
 
         if (getIndexBarRight(message).size() == getIndexBarCenter(message).size() && getIndexBarCenter(message).size() == getIndexBarLeft(message).size()) {
             return true;
@@ -126,6 +125,71 @@ public class HtmlMessageUtils {
         list.add(message.substring(after + 1, message.length()));
         return list;
     }
+
+
+    private static List<Integer> getIndexSrcRight(String message) {
+        List<Integer> indexesRight = new ArrayList<>();
+        indexesRight = getIndexRegex(message, CharacterMessageEnum.CHARACTER_SRC_RIGHT.getCharacter());
+        return indexesRight;
+    }
+
+    private static List<Integer> getIndexSrcCenter(String message) {
+        List<Integer> indexesRight = new ArrayList<>();
+        indexesRight = getIndexRegex(message, CharacterMessageEnum.CHARACTER_SRC_CENTER.getCharacter());
+        return indexesRight;
+    }
+
+    private static List<Integer> getIndexSrcLeft(String message) {
+        List<Integer> indexesRight = new ArrayList<>();
+        indexesRight = getIndexRegex(message, CharacterMessageEnum.CHARACTER_SRC_LEFT.getCharacter());
+        return indexesRight;
+    }
+
+    private static boolean countRegexSrcComposite(String message) {
+
+        if (getIndexSrcRight(message).size() == getIndexSrcCenter(message).size() && getIndexSrcCenter(message).size() == getIndexSrcLeft(message).size()) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    private static String getMessageByCompositeRegexSrc(String message) {
+
+        if (countRegexSrcComposite(message)) {
+            int size = getIndexSrcCenter(message).size();
+
+            for (int i = 0; i < size; i++) {
+
+                List<String> list = subStringComposite(getIndexSrcRight(message).get(0), getIndexSrcCenter(message).get(0), getIndexSrcLeft(message).get(0), message);
+
+                StringBuilder buildMessage = new StringBuilder();
+                buildMessage
+                        .append(list.get(0))
+                        .append(CharacterMessageEnum.CHARACTER_SRC_RIGHT.mapHtmlCharacter(1))
+                        .append(CharacterMessageEnum.CHARACTER_SRC_CENTER.mapHtmlCharacter(0))
+                        .append("\"")
+                        .append(list.get(2))
+                        .append("\"")
+                        .append(">")
+                        .append("<img src=")
+                        .append("\"")
+                        .append(list.get(1))
+                        .append("\"")
+                        .append(">")
+                        .append(CharacterMessageEnum.CHARACTER_SRC_LEFT.mapHtmlCharacter(2))
+                        .append(list.get(3));
+
+                message = buildMessage.toString();
+
+            }
+        }
+
+
+        return message;
+    }
+
 
     private static List<Integer> getIndexRegex(String sentence, String regex) {
         List<Integer> indexes = new ArrayList<>();
@@ -170,7 +234,8 @@ public class HtmlMessageUtils {
         newMessage = HtmlMessageUtils.getMessageByRegex(newMessage, CharacterMessageEnum.CHARACTER_UNDERSCORE.getCharacter());
         newMessage = HtmlMessageUtils.getMessageByRegex(newMessage, CharacterMessageEnum.CHARACTER_ENE.getCharacter());
         newMessage = HtmlMessageUtils.getMessageByRegex(newMessage, CharacterMessageEnum.CHARACTER_BREAK_SPACE.getCharacter());
-        newMessage = HtmlMessageUtils.getMessageByCompositeRegexUrl(newMessage);
+        newMessage = HtmlMessageUtils.getMessageByCompositeRegexBar(newMessage);
+        newMessage = HtmlMessageUtils.getMessageByCompositeRegexSrc(newMessage);
         return newMessage;
     }
 }

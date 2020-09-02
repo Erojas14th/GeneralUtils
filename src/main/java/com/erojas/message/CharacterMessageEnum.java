@@ -8,6 +8,9 @@ public enum CharacterMessageEnum {
     CHARACTER_BAR_RIGHT("[\\[]"),
     CHARACTER_BAR_LEFT("[\\]]"),
     CHARACTER_BAR_CENTER("[\\|]"),
+    CHARACTER_SRC_RIGHT("[\\{]"),
+    CHARACTER_SRC_LEFT("[\\}]"),
+    CHARACTER_SRC_CENTER("[!]"),
     HTML_ASTERISC_INIT("<b>"),
     HTML_ASTERISC_END("</b>"),
     HTML_UNDERSCORE_INIT("<i>"),
@@ -40,11 +43,14 @@ public enum CharacterMessageEnum {
         if (character.equals(CHARACTER_BAR_RIGHT.character) && isImpar(index)) return HTML_BAR_INIT.character;
         if (character.equals(CHARACTER_BAR_CENTER.character) && isCenter(index)) return HTML_BAR_CENTER.character;
         if (character.equals(CHARACTER_BAR_LEFT.character) && isPar(index)) return HTML_BAR_END.character;
+        if (character.equals(CHARACTER_SRC_RIGHT.character) && isImpar(index)) return HTML_BAR_INIT.character;
+        if (character.equals(CHARACTER_SRC_CENTER.character) && isCenter(index)) return HTML_BAR_CENTER.character;
+        if (character.equals(CHARACTER_SRC_LEFT.character) && isPar(index)) return HTML_BAR_END.character;
         return "";
     }
 
-    public boolean isCenter(int number){
-        if(number == 0) return true;
+    public boolean isCenter(int number) {
+        if (number == 0) return true;
         else return false;
     }
 
